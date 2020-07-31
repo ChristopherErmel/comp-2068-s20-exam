@@ -1,6 +1,47 @@
 // Fill in the missing code
+import React, { useState } from "react";
+import { Container, Form } from "react-bootstrap";
+import Axios from "axios";
+import { Redirect } from "react-router-dom";
 
 const New = function () {
+  const [inputs, setInputs] = useState({
+    title: "",
+    tourType: `I'm too young to die`,
+    groupSize: 0,
+    date: "",
+  });
+
+  const [redirect, setRedirect] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const resp = await Axios.post(`/api/tours`, inputs);
+    if (resp.status === 200) {
+      setRedirect(true);
+    }
+  };
+
+  const handleInputChange = async (event) => {
+    event.persist();
+
+    const { name, value } = event.target;
+
+    setInputs((inputs) => ({
+      ...inputs,
+      [name]: value,
+    }));
+  };
+
+  if (redirect) return <Redirect to="/tours" />;
+
+  const tourTypes = [
+    `I'm too young to die`,
+    `Hurt me plenty`,
+    `Ultra-violence`,
+    `Nightmare`,
+    `Ultra-nightmare`,
+  ];
 
   return (
     <Container className="my-5">
@@ -8,7 +49,7 @@ const New = function () {
         <h1>New Tour</h1>
       </header>
 
-      <hr/>
+      <hr />
 
       <div>
         <Form onSubmit={handleSubmit}>
@@ -30,7 +71,9 @@ const New = function () {
               defaultValue={inputs.tourType}
             >
               {tourTypes.map((type, i) => (
-                <option key={i} value={type}>{type}</option>
+                <option key={i} value={type}>
+                  {type}
+                </option>
               ))}
             </Form.Control>
           </Form.Group>
@@ -59,7 +102,9 @@ const New = function () {
           </Form.Group>
 
           <Form.Group>
-            <button type="submit" className="btn btn-primary">Create</button>
+            <button type="submit" className="btn btn-primary">
+              Create
+            </button>
           </Form.Group>
         </Form>
       </div>

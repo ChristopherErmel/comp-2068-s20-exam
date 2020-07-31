@@ -1,6 +1,30 @@
 // Fill in the missing code
+import React, {useEffect, useState} from 'react';
+import {Container} from 'react-bootstrap';
+import Axios from 'axios';
+import {Link} from 'react-router-dom';
 
 const Index = function ({user}) {
+
+  const [tours, setTours] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      await getTours();
+    })();
+  }, []);
+
+const getTours = async () => {
+  const toursResp = await Axios.get('/api/tours');
+  if(toursResp.status === 200) setTours(toursResp.data);
+}
+
+const deleteTour = async tour => {
+  const resp = await Axios.post('/api/tours/delete', {
+    id: tour._id
+  });
+  await getTours();
+}
 
   return (
     <Container className="my-5">
